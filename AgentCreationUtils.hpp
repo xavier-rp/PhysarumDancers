@@ -1,10 +1,24 @@
 #pragma once
+#include <iostream>
+#include <fstream>
 #include <vector>
-#include <cmath>
-#include <random>
 
-#include "Agent.hpp"
+#include <fftw3.h>
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
 #include "Grid.hpp"
+#include "Agent.hpp"
+#include "AgentCreationUtils.hpp"
+#include "Simulation.hpp"
+#include "Renderer.hpp"
+#include "TrailMap.hpp"
+#include "ColorMap.hpp"
+#include "CustomAudioStream.hpp"
+#include "FFts.hpp"
+
+
+#include "ColorGradient.hpp"
 
 std::vector<Agent> build_list_of_agents_origin_radial(int nb_of_agents) {
 
