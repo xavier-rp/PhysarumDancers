@@ -9,7 +9,6 @@
 
 #include "Grid.hpp"
 #include "Agent.hpp"
-#include "AgentCreationUtils.hpp"
 #include "Simulation.hpp"
 #include "Renderer.hpp"
 #include "TrailMap.hpp"
