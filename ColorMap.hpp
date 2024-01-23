@@ -117,20 +117,7 @@ public:
 		}
 	}
 
-	void compute_black_purple_white2() {
-		for (int i{ 0 }; i < 256; ++i) {
-			total_cmap_vec.push_back(sf::Color(i, 0, i, 255));
-		}
-		for (int i{ 0 }; i < 256; ++i) {
-			total_cmap_vec.push_back(sf::Color(255, i, 255, 255));
-		}
-	}
-
 	void compute_purple_white() {
-		/*for (int i{ 1 }; i < 168; ++i) {
-			total_cmap_vec.push_back(sf::Color(std::min(255, 163 + i), 88 + i, std::min(224 + i, 255), 255));
-		}
-		*/
 		for (int i{ 0 }; i < 168; ++i) {
 			total_cmap_vec.push_back(sf::Color(std::min(255, 163 + i), 88 + i, std::min(224 + i, 255), 255));
 		}
@@ -169,15 +156,6 @@ public:
 	void compute_green_purple_white() {
 		for (int i{ 0 }; i < 170; ++i) {
 			total_cmap_vec.push_back(sf::Color(std::min(24 + i, 163), std::max(255 - i, 88), std::min(55 + i, 224), 255));
-		}
-		for (int i{ 1 }; i < 168; ++i) {
-			total_cmap_vec.push_back(sf::Color(std::min(255, 163 + i), 88 + i, std::min(224 + i, 255), 255));
-		}
-	}
-
-	void compute_green_purple_white1() {
-		for (int i{ 0 }; i < 137; ++i) {
-			total_cmap_vec.push_back(sf::Color(std::min(88 + i, 163), std::max(224 - i, 88), std::min(88 + i, 224), 255));
 		}
 		for (int i{ 1 }; i < 168; ++i) {
 			total_cmap_vec.push_back(sf::Color(std::min(255, 163 + i), 88 + i, std::min(224 + i, 255), 255));
@@ -228,8 +206,6 @@ public:
 			}
 		}
 
-		//TODO Reimplement option?
-		//color_vec.push_back(sf::Color(0, 0, 0, 255)); // Add black at the end
 	}
 
 };
