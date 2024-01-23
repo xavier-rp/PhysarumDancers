@@ -17,9 +17,7 @@ public:
 
 	Agent(sf::Vector2f position = { 0.0, 0.0 }, float orientation = 0.0, float velocity = 1.0, float sensor_angle_offset = 22.5, int sensor_offset_distance = 9, int sensor_width = 1) :
 		position{ position },
-		//orientation{ orientation },
 		velocity{ velocity },
-		//sensor_angle_offset{ sensor_angle_offset },
 		sensor_offset_distance{ sensor_offset_distance },
 		sensor_width{ sensor_width } {
 
