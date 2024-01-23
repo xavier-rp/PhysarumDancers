@@ -220,18 +220,6 @@ int main()
 	int window_width{ 600 };
 	int window_height{ 400 };
 
-
-
-	//ColorMap color_map{ 100, "purple_white", false, false, 1 };
-	//ColorMap pulse_color_map{ 100, "green_white", false, false, 1 };
-
-	//ColorMap color_map{ 100, "green_purple", true, false, 1 };
-	//ColorMap pulse_color_map{ 100, "green_purple", false, false, 1 };
-
-	//ColorMap color_map{ 100, "purple_white", false, false, 1 };
-	//ColorMap color_map{ 1000, "green_purple_white", false, false, 1 };
-	//ColorMap pulse_color_map{ 1000, "green_purple_white", false, false, 1};
-
 	//ColorMap color_map{ 1000, "jet", true, false, 1 };
 	ColorMap color_map{ 1000, stops, true, false, 1 };
 
@@ -286,51 +274,19 @@ int main()
 		//renderer.render_agents();
 		window.clear(sf::Color::Black);
 		window.draw(renderer.trail_map_vertices);
-		//window.draw(renderer.agent_vertices);
 		window.display();
 
 		if (playing_stream.getStatus() == sf::SoundSource::Playing) {
 			sim.set_amplitudes(computeFrequencyAmplitudes(globalClock.getElapsedTime().asSeconds() * sampleRate * 2, FFTLength, samples, sampleCount));
-			//sim.set_amplitudes(computeFrequencyAmplitudes(playing_stream.getPlayingOffset() * sampleRate * 2, FFTLength, samples, sampleCount));
 		}
 		else {
 
 			sim.set_amplitudes(std::vector<float>(100, 0.0));
 		}
-		//sim.set_amplitudes(computeFrequencyAmplitudes(globalClock.getElapsedTime().asSeconds() * sampleRate * 2, FFTLength, samples));//(currentSampleIndex, 16384, samples);
-
-		//std::cout << sim.stepCount << "  " << sim.stepCount % 100 << std::endl;
-		//if (elapsedLoop.asSeconds() > 0.1) { // && sim.stepCount % 26 >= 25
-		//	loopClock.restart();
-		//	sim.perturbation_flag = true;
-		//}
-		//sim.set_amplitudes(computeFrequencyAmplitudes(globalClock.getElapsedTime().asSeconds() * sampleRate * 2, FFTLength, samples));//(currentSampleIndex, 16384, samples);
-		//sim.compute_band_energy();
 
 		sim.step();
-		//sim.perturbation_flag = false;
+
 		elapsedLoop = loopClock.getElapsedTime();
-		// Clear the window
-		/*
-		window.clear();
-
-		currentSampleIndex = playing_stream.getCurrentSampleIndex(playing_stream.getPlayingOffset());
-		if (elapsedSamples.asSeconds() > 1.0f / 60.0f) {
-			samplesRenderer.renderSamples(globalClock.getElapsedTime().asSeconds() * sampleRate);
-			clockSamples.restart();
-		}
-		if (elapsedFrequency.asSeconds() > 1.0f / 48.0f) {
-			amplitudes = computeFrequencyAmplitudes(globalClock.getElapsedTime().asSeconds() * sampleRate * 2, FFTLength, samples);//(currentSampleIndex, 16384, samples);
-			frequencyRenderer.renderFrequencies(amplitudes);
-			clockFrequency.restart();
-		}
-
-
-		window.clear(sf::Color::Black);
-
-		// Display the window
-		window.display();
-		*/
 
 	}
 
@@ -452,160 +408,6 @@ int main_cat()
 
 		elapsedLoop = loopClock.getElapsedTime();		
 
-	}
-
-	return 0;
-}
-
-int main2()
-{
-	// Load audio file
-	// load an audio buffer from a sound file
-	sf::ContextSettings settings;
-	settings.antialiasingLevel = 8;
-	int FFTLength = 16384;
-
-	sf::SoundBuffer buffer;
-	if (!buffer.loadFromFile("audio/lm.wav"))
-	{
-		std::cout << "Failed to load audio file!" << std::endl;
-		return -1;
-	}
-
-	const sf::Int16* samples = buffer.getSamples();
-	sf::Uint64 sampleCount = buffer.getSampleCount();
-	unsigned int sampleRate = buffer.getSampleRate();
-
-	std::vector<float> amplitudes;
-
-	int window_width{ 1900 };
-	int window_height{ 1080 };
-
-	Grid grid(static_cast<float>(window_width), static_cast<float>(window_height));
-
-	int nbSamplesToDraw = 44100/4;// 22050;//11025;
-	Grid grid2(6400.0f, 540.0f);
-	SamplesRenderer samplesRenderer{ buffer, grid2, nbSamplesToDraw};
-	Grid grid3(1900.0f, 540.0f);
-	FrequencyRenderer frequencyRenderer{ grid3, static_cast<int>(sampleRate) };
-
-	// initialize and play our custom stream
-	MyStream playing_stream;
-	playing_stream.load(buffer);
-
-	// Create window for visualization
-	sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Samples");
-
-	// Start playing the sound
-	playing_stream.play();
-	sf::Clock globalClock;
-	sf::Clock clockSamples;
-	sf::Time elapsedSamples = clockSamples.getElapsedTime();
-	sf::Clock clockFrequency;
-	sf::Time elapsedFrequency = clockFrequency.getElapsedTime();
-	int currentSampleIndex{};
-
-	// Main loop
-	while (window.isOpen())
-	{
-		// Handle events
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
-
-		// Clear the window
-		
-		window.clear();
-
-		currentSampleIndex = playing_stream.getCurrentSampleIndex(playing_stream.getPlayingOffset());
-		if (elapsedSamples.asSeconds() > 1.0f / 60.0f) {
-			samplesRenderer.renderSamples(globalClock.getElapsedTime().asSeconds() * sampleRate);
-			clockSamples.restart();
-		}
-		if (elapsedFrequency.asSeconds() > 1.0f/48.0f) {
-			amplitudes = computeFrequencyAmplitudes(globalClock.getElapsedTime().asSeconds() * sampleRate * 2, FFTLength, samples, sampleCount);//(currentSampleIndex, 16384, samples);
-			frequencyRenderer.renderFrequencies(amplitudes);
-			clockFrequency.restart();
-		}
-
-		
-		window.clear(sf::Color::Black);
-		window.draw(frequencyRenderer.verticesToDraw);
-		window.draw(samplesRenderer.chunkToDraw1);
-		window.draw(samplesRenderer.chunkToDraw2);
-
-		// Display the window
-		window.display();
-		elapsedFrequency = clockFrequency.getElapsedTime();
-		elapsedSamples = clockSamples.getElapsedTime();
-
-	}
-
-	return 0;
-}
-
-int main3() {
-	sf::ContextSettings settings;
-	settings.antialiasingLevel = 8;
-
-	sf::Music music;
-
-	if (!music.openFromFile("audio/lm.wav"))
-		return -1; // error
-	music.play();
-	
-
-	
-	std::cout << "Running main \n";
-
-	int window_width{ 500 };
-	int window_height{ 200 };
-
-	ColorMap color_map{ 100, "purple_white", false, false, 1 };
-
-	TrailMap trail_map(window_width, window_height);
-
-	Grid grid(static_cast<float>(window_width), static_cast<float>(window_height));
-
-	sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Physarum.exe");
-
-	std::vector<Agent> list_of_agents;
-
-	//list_of_agents = build_list_of_agents_random(10000, grid);
-	//list_of_agents = build_list_of_agents_uniform_circle(100);
-	
-	/*
-	int window_width{ 500 };
-	int window_height{ 200 };
-	list_of_agents = build_list_of_agents_random_inside_circle(30000, window_width / 5.0f);
-	*/
-
-	list_of_agents = build_list_of_agents_random_inside_circle(20, window_width / 5.0f);
-
-
-	Simulation sim{grid, list_of_agents, trail_map};
-
-	Renderer renderer{ sim, grid, color_map}; 
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
-
-		renderer.render_trail_map();
-		//renderer.render_agents();
-		window.clear(sf::Color::Black);
-		window.draw(renderer.trail_map_vertices);
-		//window.draw(renderer.agent_vertices);
-		window.display();
-		sim.step();
 	}
 
 	return 0;
