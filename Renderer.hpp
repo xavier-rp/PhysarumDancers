@@ -52,7 +52,7 @@ public:
 		trail_map_vertices.clear();
 		float colorModifier{};
 		
-		if (simulation.pulse_flag) {
+		if (simulation.bassPulseFlag) {
 			
 			if (simulation.stepCount - pulseSequence == beginPulseStepIndex) {
 				pulseSequence += 1;
@@ -79,7 +79,7 @@ public:
 					sf::Vertex pixel;
 					pixel.position = pos;
 
-					if (simulation.pulse_flag) {
+					if (simulation.bassPulseFlag) {
 						
 						pixel.color = color_map.color_vec[static_cast<int>(std::min(scent_value + colorModifier, 1.0f) * color_map.max_iter)];
 
