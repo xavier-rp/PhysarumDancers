@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <random>
 #include <cmath>
 
 #include "SFML/Graphics.hpp"
@@ -23,8 +24,8 @@ private:
 	std::vector<float> stdBandsEnergy {0.0f, 0.0f, 0.0f};
 	std::vector<float> energyThresholds {0.0f, 0.0f, 0.0f};
 	std::vector<float> previousLowEnergy = std::vector<float>(100, 0.0f);
-	std::vector<float> previousMidEnergy = std::vector<float>(100, 0.0f); //{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-	std::vector<float> previousHighEnergy = std::vector<float>(100, 0.0f); //{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+	std::vector<float> previousMidEnergy = std::vector<float>(100, 0.0f);
+	std::vector<float> previousHighEnergy = std::vector<float>(100, 0.0f);
 
 
 public:
@@ -36,7 +37,7 @@ public:
 	std::uniform_real_distribution<float> dis{0.0, 1.0};
 	bool perturbation_flag{ false };
 	int stepCount{ 0 };
-	bool pulse_flag{ false };
+	bool bassPulseFlag{ false };
 	int previousStepsMidPerturbed{ 0 };
 	int previous_steps_perturbed{ 0 };
 
@@ -60,12 +61,11 @@ public:
 				sf::Vector2i pixel_pos = sensor_matrix_position + sf::Vector2i(offset_x, offset_y);
 
 				if (pixel_pos.x < static_cast<int>(grid.width) && pixel_pos.x >= 0 && pixel_pos.y < static_cast<int>(grid.height) && pixel_pos.y >= 0) {
-					//std::cout << trail_map.matrix[pixel_pos.y][pixel_pos.x] << std::endl;
 					sum += trail_map.matrix[pixel_pos.y][pixel_pos.x];
 				}
 			}
 		}
-		//std::cout << std::endl;
+
 		return sum;
 	}
 
@@ -100,14 +100,12 @@ public:
 		if (current_position.x < grid.x_min || current_position.x > grid.x_max) {
 
 			current_position.x = std::max(std::min(current_position.x, grid.x_max), grid.x_min);
-			//agent.update_x_velocity(agent.get_velocity_vector().x * -1.0f);
 			agent.set_position(current_position);
 			agent.update_orientation(dis(gen) * 360.0f);
 		}
 		else if (current_position.y < grid.y_min || current_position.y > grid.y_max) {
 
 			current_position.y = std::max(std::min(current_position.y, grid.y_max), grid.y_min);
-			//agent.update_y_velocity(agent.get_velocity_vector().y * -1.0f);
 			agent.set_position(current_position);
 			agent.update_orientation(dis(gen) * 360.0f);
 		}
@@ -124,21 +122,16 @@ public:
 
 		if (current_position.x < grid.x_min) {
 			new_position += sf::Vector2f(2.0f * grid.x_max, 0.0f);
-			//agent.update_orientation(dis(gen) * 6.283185f);
 		}
 		else if (new_position.x > grid.x_max) {
 			new_position += sf::Vector2f(-2.0f * grid.x_max, 0.0f);
-			//agent.update_orientation(dis(gen) * 6.283185f);
 		}
 		if (current_position.y < grid.y_min) {
 			new_position += sf::Vector2f(0.0f, 2.0f * grid.y_max);
-			//agent.update_orientation(dis(gen) * 6.283185f);
-
 		}
 		else if (current_position.y > grid.y_max) {
 
 			new_position += sf::Vector2f(0.0f, -2.0f * grid.y_max);
-			//agent.update_orientation(dis(gen) * 6.283185f);
 		}
 		
 		agent.set_position(new_position);
@@ -182,14 +175,12 @@ public:
 		if (new_position.x < grid.x_min || new_position.x > grid.x_max) {
 
 			current_position.x = std::max(std::min(current_position.x, grid.x_max), grid.x_min);
-			//agent.update_x_velocity(agent.get_velocity_vector().x * -1.0f);
 			agent.set_position(current_position);
 			agent.update_orientation(dis(gen) * 360.0f);
 		}
 		else if (new_position.y < grid.y_min || new_position.y > grid.y_max) {
 
 			current_position.y = std::max(std::min(current_position.y, grid.y_max), grid.y_min);
-			//agent.update_y_velocity(agent.get_velocity_vector().y * -1.0f);
 			agent.set_position(current_position);
 			agent.update_orientation(dis(gen) * 360.0f);
 		}
@@ -199,36 +190,16 @@ public:
 		}
 		else {
 			agent.set_position(current_position);
-			//agent.update_orientation(dis(gen) * 360.0f);
 		}
 	}
 
-	void update_agent_position(Agent& agent, bool perturb, bool midPertubationFlag) {
+	void update_agent_position(Agent& agent, bool midPertubationFlag, bool highPerturbationFlag) {
 
-		/*
-		if (pulse_flag) {
-			agent.velocity = 1.0f;// pertubationPower * 2.0f;
-			agent.update_orientation(agent.get_orientation());
-		}
-		else {
-			agent.velocity = 1.0f;
-			agent.update_orientation(agent.get_orientation());
-		}
-		*/
-		
-
-		if (perturb) {
-			//current_position += sf::Vector2f(4.0f * (dis(gen) - 0.5f), 4.0f * (dis(gen) - 0.5f));
-			//agent.orientation += (360.0f * pertubationPower) * (dis(gen) - 0.5f);// dis(gen);
+		if (highPerturbationFlag) {
 			agent.update_orientation(agent.orientation + 2.0f * 3.1415 * (dis(gen) - 0.5f));
 		}
-
-		//sf::Vector2i matrix_position;
-		//matrix_position.x = static_cast<int>(agent.get_position().x + grid.x_max);
-		//matrix_position.y = static_cast<int>(-1.0f * agent.get_position().y + grid.y_max);
-
 		
-		// TODO REACTIVATE FOR COHERENT MOVEMENT FOR A GIVEN PERTURBATION
+		// REACTIVATE FOR COHERENT MOVEMENT FOR A GIVEN PERTURBATION
 		/*
 		if (!midPertubationFlag) { 
 			update_orientation(agent);
@@ -236,8 +207,8 @@ public:
 		*/
 		update_orientation(agent);
 
-		update_position_cyclical_random_orientation(agent);
-		//update_position_cyclical(agent);
+		//update_position_cyclical_random_orientation(agent);
+		update_position_cyclical(agent);
 		//update_position(agent);
 		//update_position_no_stack(agent);
 
@@ -276,7 +247,6 @@ public:
 
 				if (pixel_pos.x < static_cast<int>(grid.width) && pixel_pos.x >= 0 && pixel_pos.y < static_cast<int>(grid.height) && pixel_pos.y >= 0
 					&& std::abs(offset_y * offset_x) == 0) {
-					//std::cout << trail_map.matrix[pixel_pos.y][pixel_pos.x] << std::endl;
 
 					if (offset_y == 0 && offset_x == 0) {
 						trail_map.matrix[pixel_pos.y][pixel_pos.x] = 0.3f;
@@ -305,7 +275,6 @@ public:
 						sf::Vector2i pixel_pos = sf::Vector2i(j, i) + sf::Vector2i(offset_x, offset_y);
 
 						if (pixel_pos.x < static_cast<int>(grid.width) && pixel_pos.x >= 0 && pixel_pos.y < static_cast<int>(grid.height) && pixel_pos.y >= 0) {
-							//std::cout << trail_map.matrix[pixel_pos.y][pixel_pos.x] << std::endl;
 							sum += trail_map.matrix[pixel_pos.y][pixel_pos.x];
 						}
 					}
@@ -326,8 +295,6 @@ public:
 	}
 
 	void step() {
-		float perturb_chance{ dis(gen) };
-		float nudge{ dis(gen) };
 		bool midPerturbationFlag{ false };
 		bool heavyMidPerturbationFlag{ false };
 		bool highPerutbationFlag{ false };
@@ -340,12 +307,10 @@ public:
 			if (perturbation_flag) {
 				
 				if (bandsEnergy[0] > bandsAverageEnergy[0]) {
-					pulse_flag = true;
-					nudge = bandsEnergy[0] / energyThresholds[0]; // TODO attention ça devrait porter un autre nom sinon ça peut affecter le second.
-					//std::cout << stepCount << " ; " << "BassFlag" << std::endl;
+					bassPulseFlag = true;
 				}
 				else {
-					pulse_flag = false;
+					bassPulseFlag = false;
 				}
 				
 				if (bandsEnergy[1] > bandsAverageEnergy[1] + 1.0*stdBandsEnergy[1]) {
@@ -376,26 +341,8 @@ public:
 				if (bandsEnergy[2] > bandsAverageEnergy[2] + 2.0f*stdBandsEnergy[2]) {
 					heavyMidPerturbationFlag = false;
 					midPerturbationFlag = false;
-					highPerutbationFlag = true; // (previous_steps_perturbed < 1);
-					if (highPerutbationFlag) {
-						nudge = (bandsEnergy[2] - bandsAverageEnergy[2]) / (energyThresholds[2] - bandsAverageEnergy[2]);//std::powf(0.05, static_cast<int>(previous_steps_perturbed)); //* 0.005;
-					}
-					//if (nudge < bandsEnergy[1] / energyThresholds[1]) {
-
-						//std::cout << stepCount << " ; " << nudge << " == " << "Perturb!\n";
-						//std::cout << stepCount << " ; " << bandsAverageEnergy[2] << " : " << bandsEnergy[2] << " : " << bandsAverageEnergy[2] + 2.5f * stdBandsEnergy[2] << " : " << nudge <<  " == " << "HighPertubationFlag!\n";
-					//}
+					highPerutbationFlag = true;
 				}
-				/*
-				else if (bandsEnergy[2] > bandsAverageEnergy[2] + 1.0f * stdBandsEnergy[2] && bandsEnergy[2] < bandsAverageEnergy[2] + 2.0f * stdBandsEnergy[2]) {
-					nudge = (bandsEnergy[2] - bandsAverageEnergy[2]) / (energyThresholds[2] - bandsAverageEnergy[2]) * 0.005;
-					//if (nudge < bandsEnergy[1] / energyThresholds[1]) {
-					perturb = true;
-					//std::cout << stepCount << " ; " << nudge << " == " << "Perturb!\n";
-					std::cout << stepCount << " ; " << 222222222 << nudge << " == " << "Perturb!\n";
-					//}
-				}
-				*/
 			}
 		}
 		
@@ -408,23 +355,19 @@ public:
 
 			
 			if (midPerturbationFlag) {
-				/*
+				
 				if (dis(gen) < 0.5) {
 					agent.set_orientation(agent.get_orientation() + 0.005f);
 				}
 				else {
 					agent.set_orientation(agent.get_orientation() - 0.005f);
 				}
-				*/
+				
 
 				if (heavyMidPerturbationFlag) {
 					//agent.set_orientation(agent.get_orientation() + 0.2f); //rotation
-					if (dis(gen) < 1.5) {
-						agent.set_orientation(agent.get_orientation() + static_cast<float>(stepCount) * 0.2f); //coherent rotation
-					}
-					else {
-						agent.set_orientation(3.1415f * static_cast<float>(stepCount) * 0.2f); //coherent rotation
-					}
+
+					agent.set_orientation(agent.get_orientation() + static_cast<float>(stepCount) * 0.2f); //coherent rotation
 
 					/*
 					if (heavyMidPerturbationChooser < 0.5) {
@@ -445,7 +388,7 @@ public:
 			}
 			
 
-			update_agent_position(agent, highPerutbationFlag, midPerturbationFlag);
+			update_agent_position(agent, midPerturbationFlag, highPerutbationFlag);
 			//update_trail_map();
 			update_trail_map_with_agents(agent);
 
