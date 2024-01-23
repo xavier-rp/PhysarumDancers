@@ -41,13 +41,10 @@
     <ClInclude Include="CustomAudioStream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SamplesRenderer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FrequencyRenderer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ColorGradient.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FFTs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
