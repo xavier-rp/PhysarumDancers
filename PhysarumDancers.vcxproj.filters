@@ -41,9 +41,6 @@
     <ClInclude Include="CustomAudioStream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FFTPlanner.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SamplesRenderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
