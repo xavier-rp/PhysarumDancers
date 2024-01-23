@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Agent.hpp" />
+    <ClInclude Include="AgentCreationUtils.hpp" />
     <ClInclude Include="ColorGradient.hpp" />
     <ClInclude Include="ColorMap.hpp" />
     <ClInclude Include="CustomAudioStream.hpp" />

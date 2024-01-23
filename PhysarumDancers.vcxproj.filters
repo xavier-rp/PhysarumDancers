@@ -47,5 +47,8 @@
     <ClInclude Include="FFTs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AgentCreationUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
